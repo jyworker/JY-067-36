@@ -48,4 +48,38 @@ public class HanziSimilarHelperTest {
         Assert.assertEquals("[爰, 爯, 受, 爭, 妥, 憂, 李, 爳, 叐, 雙]", list.toString());
     }
 
+    @Test
+    public void findSimilarInTextTest() {
+        String text = "未来的路还很长，末日即将来临，木头人游戏开始了";
+        List<SimilarMatch> matches = HanziSimilarHelper.findSimilarInText(text, '末', 0.5);
+
+        System.out.println("匹配结果:");
+        for (SimilarMatch match : matches) {
+            System.out.println(match);
+        }
+
+        Assert.assertNotNull(matches);
+        Assert.assertTrue(matches.size() > 0);
+
+        for (SimilarMatch match : matches) {
+            Assert.assertTrue(match.getScore() >= 0.5);
+            Assert.assertTrue(match.getIndex() >= 0);
+            Assert.assertTrue(match.getIndex() < text.length());
+            Assert.assertEquals(text.charAt(match.getIndex()), match.getHanzi());
+        }
+    }
+
+    @Test
+    public void findSimilarInTextEmptyTest() {
+        List<SimilarMatch> matches = HanziSimilarHelper.findSimilarInText("", '末', 0.5);
+        Assert.assertTrue(matches.isEmpty());
+    }
+
+    @Test
+    public void findSimilarInTextNoMatchTest() {
+        String text = "一二三四五六七八九十";
+        List<SimilarMatch> matches = HanziSimilarHelper.findSimilarInText(text, '末', 0.99);
+        Assert.assertTrue(matches.isEmpty());
+    }
+
 }
